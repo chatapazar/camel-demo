@@ -1,7 +1,16 @@
+install operator amq-streams
+install operator camel k
+
 oc new-project amq-streams
+
+deploy obsidiandynamics/kafdrop
+set KAFKA_BROKERCONNECT=my-cluster-kafka-bootstrap:9092
+port 9000:9000
+
 oc apply -f kafka.yaml
 oc apply -f topic.yaml --> create 1 partition for easy describe
-oc rsh my-cluster-kafka-0 -n amq-streams
+oc project amp-streams
+oc rsh my-cluster-kafka-0 
 cd bin
 ./kafka-topics.sh --bootstrap-server localhost:9092 --list
 
@@ -35,5 +44,5 @@ oc run kafka-consumer -ti \
 
 #camel k
 oc create secret generic kafka-props --from-file application.properties
-kamel run --config secret:kafka-props KafkaProducer.java --dev
 kamel run --config secret:kafka-props KafkaConsumer.java --dev
+kamel run --config secret:kafka-props KafkaProducer.java --dev
