@@ -1,0 +1,27 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+  name: coffee-source
+  labels:
+    camel.apache.org/kamelet.type: "source"
+spec:
+  definition:
+    title: "Coffee Source"
+    description: "Retrieve a random coffee from a catalog of coffees"
+    properties:
+      period:
+        title: Period
+        description: The interval between two events in seconds
+        type: integer
+        default: 1000
+  types:
+    out:
+      mediaType: application/json
+  template:
+    from:
+      uri: timer:tick
+      parameters:
+        period: "{{period}}"
+      steps:
+      - to: "https://random-data-api.com/api/coffee/random_coffee"
+      - to: "kamelet:sink"
