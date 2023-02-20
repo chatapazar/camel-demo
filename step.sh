@@ -23,6 +23,15 @@ oc run kafka-producer -ti \
 --bootstrap-server my-cluster-kafka-bootstrap:9092 \
 --topic my-topic
 
+#for streams 2.3
+oc run kafka-producer -ti \
+--image=registry.redhat.io/amq7/amq-streams-kafka-33-rhel8:2.3.0 \
+--rm=true \
+--restart=Never \
+-- bin/kafka-console-producer.sh \
+--bootstrap-server cluster-name-kafka-bootstrap:9092 \
+--topic my-topic
+
 send data a,b,c and exit
 
 oc run kafka-consumer -ti \
@@ -34,6 +43,15 @@ oc run kafka-consumer -ti \
 --topic my-topic \
 --from-beginning \
 --consumer-property group.id=exim
+
+#for streams 2.3
+oc run kafka-consumer -ti \
+--image=registry.redhat.io/amq7/amq-streams-kafka-33-rhel8:2.3.0 \
+--rm=true \
+--restart=Never \
+-- bin/kafka-console-consumer.sh \
+--bootstrap-server cluster-name-kafka-bootstrap:9092 \
+--topic my-topic --from-beginning
 
 #run in oc rsh terminal
 ./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group exim
