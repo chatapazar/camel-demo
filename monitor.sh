@@ -118,3 +118,86 @@ open grafana in streams-grafana
 user: admin/admin
 test datasources
 import dashboard (kafka, zookeeper, exporter)
+
+
+#create topic
+kind: KafkaTopic
+apiVersion: kafka.strimzi.io/v1beta2
+metadata:
+  name: my-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+  namespace: streams-kafka-cluster
+spec:
+  partitions: 3
+  replicas: 3
+  config:
+    retention.ms: 604800000
+    segment.bytes: 1073741824
+
+#create producer
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-producer
+  labels:
+    app: hello-world-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-producer
+  template:
+    metadata:
+      labels:
+        app: hello-world-producer
+    spec:
+      containers:
+      - name: hello-world-producer
+        image: strimzi/hello-world-producer:latest
+        env:
+          - name: BOOTSTRAP_SERVERS
+            value: my-cluster-kafka-bootstrap:9092
+          - name: TOPIC
+            value: my-topic
+          - name: DELAY_MS
+            value: "10"
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: MESSAGE_COUNT
+            value: "1000000"
+
+
+#crate consumer
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-consumer
+  labels:
+    app: hello-world-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-consumer
+  template:
+    metadata:
+      labels:
+        app: hello-world-consumer
+    spec:
+      containers:
+      - name: hello-world-consumer
+        image: strimzi/hello-world-consumer:latest
+        env:
+          - name: BOOTSTRAP_SERVERS
+            value: my-cluster-kafka-bootstrap:9092
+          - name: TOPIC
+            value: my-topic
+          - name: GROUP_ID
+            value: my-hello-world-consumer
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: MESSAGE_COUNT
+            value: "1000000"
