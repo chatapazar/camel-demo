@@ -1,4 +1,4 @@
-install operator amq-streams-camel
+install operator amq-streams
 install operator camel k
 
 oc new-project amq-streams-camel
