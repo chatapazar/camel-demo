@@ -56,4 +56,9 @@ import dashboard (kafka, zookeeper, exporter) from strimzi-kafka-operator downlo
 
 
 oc apply -f loadtest-topic.yml -n streams-kafka-cluster
+oc apply -f consumer-deployment.yaml -n streams-kafka-cluster
 oc apply -f load-job.yml -n streams-kafka-cluster
+
+#clear topic
+oc delete -f loadtest-topic.yml -n streams-kafka-cluster
+oc delete -f load-job.yml -n streams-kafka-cluster

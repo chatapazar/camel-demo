@@ -6,7 +6,7 @@ metadata:
   name: kafka-perf-producer-job
 spec:
   parallelism: 10
-  completions: 5
+  completions: 8
   backoffLimit: 1
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
       - name: kafka-perf-producer
         image: quay.io/strimzi/kafka:latest-kafka-3.0.1
         command: [ "bin/kafka-producer-perf-test.sh" ]
-        args: [ "--topic", "my-topic", "--throughput", "-1", "--num-records", "5000000", "--producer-props", "bootstrap.servers=my-cluster-kafka-bootstrap:9092", "--record-size", "2048" ]
+        args: [ "--topic", "my-topic", "--throughput", "-1", "--num-records", "3000000", "--producer-props", "bootstrap.servers=my-cluster-kafka-bootstrap:9092", "--record-size", "2048" ]
         volumeMounts:
         - name: strimzi-ca
           readOnly: true
