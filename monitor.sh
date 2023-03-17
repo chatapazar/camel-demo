@@ -85,7 +85,8 @@ roleRef:
   name: cluster-monitoring-view
   apiGroup: rbac.authorization.k8s.io
 EOF
-
+# case don't found token after create sa
+#oc create token -n streams-grafan grafana-serviceaccount
 export TOKEN=$(oc serviceaccounts get-token grafana-serviceaccount -n streams-grafana)
 
 cat << EOF | oc apply -f -
